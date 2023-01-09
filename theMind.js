@@ -1,7 +1,8 @@
 class TheMind {
     static LOGIN = 0;
     static PLAYING = 1;
-    static END = 2;
+    static INTER = 2;
+    static END = 3;
 
     constructor() {
         this.players = [];
@@ -21,7 +22,6 @@ class TheMind {
     }
 
     logged(user) {
-        console.log("checking ", user);
         if (typeof user !== 'string' || user.length == 0)
             return false;
         for (let i = 0; i < this.players.length; i++) {
@@ -29,6 +29,26 @@ class TheMind {
                 return true;
         }
         return false;
+    }
+
+    status(user) {
+        console.log("Game status", user);
+        const response = {
+            state: this.state
+        };
+        switch (this.state) {
+            case TheMind.PLAYING:
+                response.cards = [2, 4, 8, 16, 32, 68];
+                break;
+            case TheMind.INTER:
+                response.result = "43 (pepe) > 42 (juan)";
+                break;
+            case TheMind.END:
+                response.result = "You managed to last until round 42";
+                break;
+        }
+
+        return response;
     }
 }
 

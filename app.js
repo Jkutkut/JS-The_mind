@@ -24,6 +24,7 @@ app.get(
             case TheMind.LOGIN:
                 res.redirect('/login');
             case TheMind.PLAYING:
+            case TheMind.INTER:
                 res.redirect('/game');
             case TheMind.END:
                 res.render('error', {message: "Xao pescao", error: {status: 0, stack: ""}});
@@ -53,8 +54,45 @@ app.get(
         const user = req.query.user;
         if (!game.logged(user))
             return res.redirect('/login'); // TODO show special message?
-        console.log(req);
-        res.send("Not implemented"); // TODO
+        res.render('game');
+    }
+);
+
+app.get(
+    '/game/status',
+    (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(game.status(req.query.user)));
+    }
+)
+// ! DEBUG
+app.get(
+    '/debug/start',
+    (req, res) => {
+        game.state = TheMind.PLAYING;
+        res.send('OK');
+    }
+);
+app.get(
+    '/debug/startRound',
+    (req, res) => {
+        game.state = TheMind.PLAYING;
+        res.send('OK');
+    }
+);
+
+app.get(
+    '/debug/endRound',
+    (req, res) => {
+        game.state = TheMind.INTER;
+        res.send('OK');
+    }
+);
+app.get(
+    '/debug/endGame',
+    (req, res) => {
+        game.state = TheMind.END;
+        res.send('OK');
     }
 );
 
