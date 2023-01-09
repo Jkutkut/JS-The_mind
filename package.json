@@ -1,0 +1,23 @@
+{
+  "name": "the_mind",
+  "version": "0.1",
+  "description": "Basic recreation of the board game \"The mind\"",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./bin/themind"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jkutkut/JS-The_mind.git"
+  },
+  "author": "HombreGofre and Jkutkut",
+  "bugs": {
+    "url": "https://github.com/Jkutkut/JS-The_mind/issues"
+  },
+  "homepage": "https://github.com/Jkutkut/JS-The_mind#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "hbs": "^4.2.0"
+  }
+}
