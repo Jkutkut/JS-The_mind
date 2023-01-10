@@ -32,7 +32,7 @@ class TheMind {
     }
 
     status(user) {
-        console.log("Game status", user);
+        // console.log("Game status", user);
         const response = {
             state: this.state
         };
@@ -47,7 +47,6 @@ class TheMind {
                 response.result = "You managed to last until round 42";
                 break;
         }
-
         return response;
     }
 }
