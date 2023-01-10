@@ -48,6 +48,8 @@ app.post(
     }
 )
 
+
+// Game
 app.get(
     '/game',
     (req, res) => {
@@ -65,6 +67,11 @@ app.get(
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(game.status(req.query.user)));
     }
+)
+
+app.post(
+    '/sendCard',
+    (req, res) => game.sendCard(res, req.body.user)
 )
 // ! DEBUG
 app.get(

@@ -31,7 +31,7 @@ window.addEventListener('load', () => {
     }
     btnSend = document.getElementById('btnSend');
     btnSend.addEventListener('click', async () => {
-        await fetch('/sendCard', {method: "GET"});
+        await fetch(`/sendCard?user=${user}`, {method: "POST"});
         updateGame();
     });
 
