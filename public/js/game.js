@@ -1,7 +1,8 @@
 var updateLoop;
 var user;
-var containers;
 
+// Game
+var containers, btnSend;
 
 async function makeRequestAPI(request) {
     return await fetch(
@@ -24,8 +25,15 @@ window.addEventListener('load', () => {
     containers = {
         waitingLogin: document.getElementById('waitingLogin'),
         waitingInter: document.getElementById('waitingInter'),
-        game: document.getElementById('game')
+        game: document.getElementById('game'),
+
+        cards: document.getElementById('cards')
     }
+    btnSend = document.getElementById('btnSend');
+    btnSend.addEventListener('click', async () => {
+        await fetch('/sendCard', {method: "GET"});
+        updateGame();
+    });
 
     updateLoop = setInterval(async () => {
         try {
@@ -64,26 +72,36 @@ window.addEventListener('load', () => {
 // }
 
 const updateFts = [
-    () => { // LOGIN
+    (status) => { // LOGIN
         waitingLogin.classList.remove("hidden");
         waitingInter.classList.add("hidden");
         game.classList.add("hidden");
     },
-    () => { // playing
+    (status) => { // playing
         waitingLogin.classList.add("hidden");
         waitingInter.classList.add("hidden");
         game.classList.remove("hidden");
+
+        while (containers.cards.firstChild)
+            containers.cards.removeChild(containers.cards.firstChild);
+
+        let p;
+        for (let i = 0; i < status.cards.length; i++) {
+            p = document.createElement('p');
+            p.innerHTML = status.cards[i];
+            containers.cards.appendChild(p);
+        }
     },
-    () => { // Inter
+    (status) => { // Inter
         waitingLogin.classList.add("hidden");
         waitingInter.classList.remove("hidden");
         game.classList.add("hidden");
     },
-    () => {} // Implemented by server
+    (status) => {} // Implemented by server
 ]
 
 async function updateGame() {
     let status = await (await makeRequestAPI(`/game/status?user=${user}`)).json();
     console.log(status);
-    updateFts[status.state]();
+    updateFts[status.state](status);
 }
