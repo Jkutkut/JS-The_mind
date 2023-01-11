@@ -13,7 +13,20 @@ class Player {
     }
 
     addCard(card) {
-        this.cards.push(card); // TODO add them sorted
+        const binarySearchAdd = (arr, x) => {
+            let start = 0, end = arr.length;
+            while (start < end) {
+                let mid = Math.floor((start + end) / 2);
+                if (arr[mid] < x) {
+                    start = mid + 1;
+                } else {
+                    end = mid;
+                }
+            }
+            arr.splice(start, 0, x);
+            return arr;
+        }
+        this.cards = binarySearchAdd(this.cards, card);
     }
 
     removeCard() {
@@ -32,7 +45,8 @@ class TheMind {
 
     constructor() {
         this.players = [];
-        this.level = 0; // First lvl is 1
+        // this.level = 0; // First lvl is 1
+        this.level = 5 // TODO
         this.state = TheMind.LOGIN;
 
         // Playing state
