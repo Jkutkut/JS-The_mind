@@ -73,18 +73,19 @@ app.post(
     '/sendCard',
     (req, res) => game.sendCard(res, req.body.user)
 )
+
 // ! DEBUG
 app.get(
     '/debug/start',
     (req, res) => {
-        game.state = TheMind.PLAYING;
+        game.start();
         res.send('OK');
     }
 );
 app.get(
     '/debug/startRound',
     (req, res) => {
-        game.state = TheMind.PLAYING;
+        game.startRound();
         res.send('OK');
     }
 );
@@ -92,14 +93,14 @@ app.get(
 app.get(
     '/debug/endRound',
     (req, res) => {
-        game.state = TheMind.INTER;
+        game.endRound();
         res.send('OK');
     }
 );
 app.get(
     '/debug/endGame',
     (req, res) => {
-        game.state = TheMind.END;
+        game.endGame();
         res.send('OK');
     }
 );

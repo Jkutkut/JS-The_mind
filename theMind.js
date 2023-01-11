@@ -1,10 +1,24 @@
 class Player {
     constructor(name) {
         this.name = name;
+        this.cards = [];
     }
 
     is(user) {
         return this.name == user;
+    }
+
+    clearCards() {
+        this.cards.length = 0;
+    }
+
+    addCard(card) {
+        this.cards.push(card); // TODO add them sorted
+    }
+
+    removeCard() {
+        // Return the first card
+        return this.cards.shift();
     }
 }
 
@@ -81,9 +95,10 @@ class TheMind {
         const response = {
             state: this.state
         };
+        let userIndex = this.indexOf(user);
         switch (this.state) {
             case TheMind.PLAYING:
-                response.cards = [2, 4, 8, 16, 32, 68]; // TODO generate cards
+                response.cards = this.players[userIndex].cards;
                 break;
             case TheMind.INTER:
                 response.result = "43 (pepe) > 42 (juan)";
