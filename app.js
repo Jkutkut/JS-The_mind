@@ -71,7 +71,7 @@ app.get(
 
 app.post(
     '/sendCard',
-    (req, res) => game.sendCard(res, req.body.user)
+    (req, res) => game.sendCard(res, req.query.user)
 )
 
 // ! DEBUG

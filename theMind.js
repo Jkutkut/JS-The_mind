@@ -17,6 +17,8 @@ class Player {
     }
 
     removeCard() {
+        if (this.cards.length == 0)
+            return -1;
         // Return the first card
         return this.cards.shift();
     }
@@ -32,6 +34,10 @@ class TheMind {
         this.players = [];
         this.level = 0; // First lvl is 1
         this.state = TheMind.LOGIN;
+
+        // Playing state
+        this.remaining = -1;
+        this.lastCard = -1;
     }
 
     // Change state
@@ -64,11 +70,13 @@ class TheMind {
                 yield arr.splice(Math.floor(Math.random() * (i--)), 1)[0];
         };
         const cards = generator(1, 100);
+        this.remaining = this.players.length * this.level;
         for (let i = 0; i < this.players.length; i++) {
             this.players[i].clearCards();
             for (let j = 0; j < this.level; j++)
                 this.players[i].addCard(cards.next().value);
         }
+        this.lastCard = -1;
     }
 
     endGame() {
@@ -128,13 +136,21 @@ class TheMind {
     }
 
     sendCard(res, user) {
-        // TODO check correct state
+        // console.log("Send card", user);
+        if (this.state != TheMind.PLAYING)
+            return res.send({error: "Not on playing phase."});
+        // console.log("Obtaining card", user);
         const userIndex = this.indexOf(user);
-        // TODO check valid user
-
-        // TODO check player no cards
-        
-
+        if (userIndex == -1)
+            return res.send({error: "User not found"});
+        // console.log("User found:", user, userIndex);
+        const card = this.players[userIndex].removeCard();
+        if (card == -1)
+            return res.send({error: "No cards left"});
+        // TODO check valid card used
+        this.remaining--;
+        console.log(`${user} sent ${card}`);
+        res.send("OK");
     }
 }
 
