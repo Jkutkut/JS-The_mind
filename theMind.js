@@ -37,7 +37,10 @@ class TheMind {
 
         // Playing state
         this.remaining = -1;
-        this.lastCard = -1;
+        this.allCards = [];
+
+        // Inter state
+        this.roundResult = "";
     }
 
     // Change state
@@ -47,11 +50,18 @@ class TheMind {
         this.startRound();
     }
 
-    endRound() {
+    endRound(success, reason="") {
         if (this.state != TheMind.PLAYING)
             return;
+        if (success) {
+            this.roundResult = "Round " + this.level + " ended successfully";
+            // TODO analyze round
+        }
+        else {
+            this.level--;
+            this.roundResult = reason;
+        }
         this.state = TheMind.INTER;
-        // TODO analyze round
     }
 
     startRound() {
@@ -70,13 +80,18 @@ class TheMind {
                 yield arr.splice(Math.floor(Math.random() * (i--)), 1)[0];
         };
         const cards = generator(1, 100);
+        this.allCards.length = 0;
         this.remaining = this.players.length * this.level;
-        for (let i = 0; i < this.players.length; i++) {
+        let card;
+        for (let i = 0, j; i < this.players.length; i++) {
             this.players[i].clearCards();
-            for (let j = 0; j < this.level; j++)
-                this.players[i].addCard(cards.next().value);
+            for (j = 0; j < this.level; j++) {
+                card = cards.next().value;
+                this.players[i].addCard(card);
+                this.allCards.push(card);
+            }
         }
-        this.lastCard = -1;
+        this.allCards.sort((a, b) => b - a); // Smallest last
     }
 
     endGame() {
@@ -105,8 +120,6 @@ class TheMind {
         return false;
     }
 
-    // TODO create methods to change state
-
     status(user) {
         // console.log("Game status", user);
         let userIndex = this.indexOf(user);
@@ -120,7 +133,7 @@ class TheMind {
                 response.cards = this.players[userIndex].cards;
                 break;
             case TheMind.INTER:
-                response.result = "43 (pepe) > 42 (juan)";
+                response.result = this.roundResult;
                 break;
             case TheMind.END:
                 response.result = "You managed to last until round 42";
@@ -150,7 +163,13 @@ class TheMind {
         if (card == -1)
             return res.send({error: "No cards left"});
         // TODO check valid card used
+        if (this.allCards[this.remaining - 1] != card) {
+            this.endRound(false, `${user} sent ${card} but the next one was ${this.allCards[this.remaining - 1]}`);
+            return res.send({error: "Wrong card"});
+        }
         this.remaining--;
+        if (this.remaining == 0)
+            this.endRound(true);
         console.log(`${user} sent ${card}`);
         res.send("OK");
     }

@@ -27,7 +27,11 @@ window.addEventListener('load', () => {
         waitingInter: document.getElementById('waitingInter'),
         game: document.getElementById('game'),
 
-        cards: document.getElementById('cards')
+        // Playing
+        cards: document.getElementById('cards'),
+
+        // Inter
+        roundResult: document.getElementById('roundResult'),
     }
     btnSend = document.getElementById('btnSend');
     btnSend.addEventListener('click', async () => {
@@ -96,6 +100,7 @@ const updateFts = [
         waitingLogin.classList.add("hidden");
         waitingInter.classList.remove("hidden");
         game.classList.add("hidden");
+        roundResult.innerHTML = status.result;
     },
     (status) => {} // Implemented by server
 ]
