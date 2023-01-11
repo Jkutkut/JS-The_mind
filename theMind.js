@@ -20,6 +20,39 @@ class TheMind {
         this.state = TheMind.LOGIN;
     }
 
+    // Change state
+    start() {
+        if (this.state != TheMind.LOGIN)
+            return;
+        this.startRound();
+    }
+
+    endRound() {
+        if (this.state != TheMind.PLAYING)
+            return;
+        this.state = TheMind.INTER;
+        // TODO analyze round
+    }
+
+    startRound() {
+        if (this.state != TheMind.INTER && this.state != TheMind.LOGIN)
+            return;
+        this.state = TheMind.PLAYING;
+        this.level++;
+        console.log("Round", this.level);
+        for (let i = 0; i < this.players.length; i++) {
+            this.players[i].clearCards();
+            for (let j = 0; j < this.level; j++) {
+                this.players[i].addCard(Math.floor(Math.random() * 100)); // TODO generate cards
+            }
+        }
+    }
+
+    endGame() {
+        // TODO
+        this.state = TheMind.END;
+    }
+
     addPlayer(req, res) {
         if (this.state != TheMind.LOGIN)
             return res.send({error: "Not on login phase."}); // TODO refactor with render and error
