@@ -109,10 +109,12 @@ class TheMind {
 
     status(user) {
         // console.log("Game status", user);
+        let userIndex = this.indexOf(user);
+        if (userIndex == -1)
+            return {state: -1};
         const response = {
             state: this.state
         };
-        let userIndex = this.indexOf(user);
         switch (this.state) {
             case TheMind.PLAYING:
                 response.cards = this.players[userIndex].cards;

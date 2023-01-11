@@ -103,5 +103,7 @@ const updateFts = [
 async function updateGame() {
     let status = await (await makeRequestAPI(`/game/status?user=${user}`)).json();
     console.log(status);
+    if (status.state == -1)
+        return window.location.reload();
     updateFts[status.state](status);
 }
