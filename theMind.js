@@ -54,11 +54,20 @@ class TheMind {
         this.state = TheMind.PLAYING;
         this.level++;
         console.log("Round", this.level);
+
+        const generator = function *(min, max) {
+            const arr = [];
+            for (let i = min; i <= max; i++)
+                arr.push(i);
+            let i = arr.length;
+            while (i)
+                yield arr.splice(Math.floor(Math.random() * (i--)), 1)[0];
+        };
+        const cards = generator(1, 100);
         for (let i = 0; i < this.players.length; i++) {
             this.players[i].clearCards();
-            for (let j = 0; j < this.level; j++) {
-                this.players[i].addCard(Math.floor(Math.random() * 100)); // TODO generate cards
-            }
+            for (let j = 0; j < this.level; j++)
+                this.players[i].addCard(cards.next().value);
         }
     }
 
