@@ -7,6 +7,19 @@ async function makeRequestAPI(request) {
     );
 }
 
+async function postAPI(url, data = {}) {
+    return await fetch(
+        url,
+        {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        }
+    );
+}
+
 // JSON stringify
 let indentArr;
 function indent(depth) {

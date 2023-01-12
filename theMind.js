@@ -2,6 +2,7 @@ class Player {
     constructor(name) {
         this.name = name;
         this.cards = [];
+        this._panic = false;
     }
 
     is(user) {
@@ -35,6 +36,19 @@ class Player {
         // Return the first card
         return this.cards.shift();
     }
+
+    get panic() {
+        return this._panic;
+    }
+
+    doPanic() {
+        console.log(this.name, ": panic method called")
+        this._panic = true;
+    }
+
+    dontPanic() {
+        this._panic = false;
+    }
 }
 
 class TheMind {
@@ -48,9 +62,11 @@ class TheMind {
     constructor() {
         this.players = [];
         // this.level = 0; // First lvl is 1
-        this.level = 5 // TODO
+        this.level = 4 // TODO
         this.state = TheMind.LOGIN;
-        this.health = 3;
+        this.health = 3; // TODO change based on number of players
+        this.panics = 2; // TODO change based on number of players
+        this.playersInPanic = -1;
 
         // Playing state
         this.remaining = -1;
@@ -66,8 +82,9 @@ class TheMind {
             state: this.state,
             level: this.level,
             health: this.health,
+            panics: this.panics,
             result: this.roundResult,
-            players: this.players.map(p => { return { name: p.name, cards: p.cards } })
+            players: this.players.map(p => { return { name: p.name, inPanic: p.panic, cards: p.cards } })
         };
     }
 
@@ -76,7 +93,7 @@ class TheMind {
     }
 
     addPanic() {
-        // TODO
+        this.panics++;
     }
 
     start() {
@@ -88,6 +105,7 @@ class TheMind {
     endRound(success, reason="") {
         if (this.state != TheMind.PLAYING)
             return;
+        this.playersInPanic = -1;
         if (success) {
             this.roundResult = "Round " + this.level + " ended successfully";
             // TODO add health if necessary
@@ -108,6 +126,7 @@ class TheMind {
             return;
         this.state = TheMind.PLAYING;
         this.level++;
+        this.playersInPanic = 0;
         console.log("Round", this.level);
 
         const generator = function *(min, max) {
@@ -123,6 +142,7 @@ class TheMind {
         this.remaining = this.players.length * this.level;
         let card;
         for (let i = 0, j; i < this.players.length; i++) {
+            this.players[i].dontPanic();
             this.players[i].clearCards();
             for (j = 0; j < this.level; j++) {
                 card = cards.next().value;
@@ -168,9 +188,11 @@ class TheMind {
         const response = {
             state: this.state,
             health: this.health,
+            panics: this.panics,
         };
         switch (this.state) {
             case TheMind.PLAYING:
+                response.inPanic = this.players[userIndex].panic;
                 response.cards = this.players[userIndex].cards;
                 response.lastCard = -1;
                 if (this.remaining < this.allCards.length)
@@ -195,14 +217,11 @@ class TheMind {
     }
 
     sendCard(res, user) {
-        // console.log("Send card", user);
         if (this.state != TheMind.PLAYING)
             return res.send({error: "Not on playing phase."});
-        // console.log("Obtaining card", user);
         const userIndex = this.indexOf(user);
         if (userIndex == -1)
             return res.send({error: "User not found"});
-        // console.log("User found:", user, userIndex);
         const card = this.players[userIndex].removeCard();
         if (card == -1)
             return res.send({error: "No cards left"});
@@ -214,6 +233,22 @@ class TheMind {
         if (this.remaining == 0)
             this.endRound(true);
         console.log(`${user} sent ${card}`);
+        res.send("OK");
+    }
+
+    panic(res, user) {
+        if (this.state != TheMind.PLAYING)
+            return res.send({error: "Not on playing phase."});
+        const userIndex = this.indexOf(user);
+        if (userIndex == -1)
+            return res.send({error: "User not found"});
+        this.players[userIndex].doPanic();
+        this.playersInPanic++;
+        console.log(`${user} panicked`);
+        if (this.playersInPanic == this.players.length) {
+            this.panics--;
+            this.endRound(false, "All players panicked");
+        }
         res.send("OK");
     }
 }
