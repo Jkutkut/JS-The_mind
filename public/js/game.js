@@ -28,6 +28,7 @@ window.addEventListener('load', () => {
         game: document.getElementById('game'),
 
         // Playing
+        lastCard: document.getElementById('lastCard'),
         cards: document.getElementById('cards'),
 
         // Inter
@@ -85,6 +86,8 @@ const updateFts = [
         waitingLogin.classList.add("hidden");
         waitingInter.classList.add("hidden");
         game.classList.remove("hidden");
+
+        lastCard.innerHTML = (status.lastCard == -1)? "" : "<h1>" + status.lastCard + "</h1>";
 
         while (containers.cards.firstChild)
             containers.cards.removeChild(containers.cards.firstChild);
