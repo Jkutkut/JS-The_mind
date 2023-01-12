@@ -50,6 +50,7 @@ class TheMind {
         // this.level = 0; // First lvl is 1
         this.level = 5 // TODO
         this.state = TheMind.LOGIN;
+        this.health = 3;
 
         // Playing state
         this.remaining = -1;
@@ -59,7 +60,15 @@ class TheMind {
         this.roundResult = "";
     }
 
-    // Change state
+    // Root menu:
+    addLive() {
+        this.health++;
+    }
+
+    addPanic() {
+        // TODO
+    }
+
     start() {
         if (this.state != TheMind.LOGIN)
             return;
@@ -71,13 +80,14 @@ class TheMind {
             return;
         if (success) {
             this.roundResult = "Round " + this.level + " ended successfully";
-            // TODO analyze round
+            // TODO add health if necessary
         }
         else {
             this.level--;
+            this.health--;
             this.roundResult = reason;
         }
-        if (this.level >= Math.min(TheMind.MAX_LEVEL, 100 / this.players.length))
+        if (this.health == 0 || this.level >= Math.min(TheMind.MAX_LEVEL, 100 / this.players.length))
             this.endGame();
         else
             this.state = TheMind.INTER;
@@ -117,6 +127,8 @@ class TheMind {
         this.state = TheMind.END;
     }
 
+    // App:
+
     addPlayer(req, res) {
         if (this.state != TheMind.LOGIN)
             return res.send({error: "Not on login phase."}); // TODO refactor with render and error
@@ -144,7 +156,8 @@ class TheMind {
         if (userIndex == -1)
             return {state: -1};
         const response = {
-            state: this.state
+            state: this.state,
+            health: this.health,
         };
         switch (this.state) {
             case TheMind.PLAYING:

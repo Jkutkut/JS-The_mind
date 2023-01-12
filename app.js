@@ -118,6 +118,22 @@ app.get(
     }
 );
 
+app.get(
+    '/debug/extraLive',
+    (req, res) => {
+        game.addLive();
+        res.send('OK');
+    }
+);
+
+app.get(
+    '/debug/extraPanic',
+    (req, res) => {
+        game.addPanic();
+        res.send('OK');
+    }
+);
+
 // **** Errors ****
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
