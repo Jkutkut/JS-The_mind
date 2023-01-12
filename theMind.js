@@ -149,6 +149,9 @@ class TheMind {
         switch (this.state) {
             case TheMind.PLAYING:
                 response.cards = this.players[userIndex].cards;
+                response.lastCard = -1;
+                if (this.remaining < this.allCards.length)
+                    response.lastCard = this.allCards[this.remaining];
                 break;
             case TheMind.INTER:
                 response.result = this.roundResult;
