@@ -33,6 +33,13 @@ app.get(
 );
 
 app.get(
+    '/root',
+    (req, res) => {
+        res.render('root');
+    }
+)
+
+app.get(
     '/login',
     (req, res) => {
         if (game.state != TheMind.LOGIN)
