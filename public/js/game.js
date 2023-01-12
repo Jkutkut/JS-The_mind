@@ -102,7 +102,13 @@ const updateFts = [
         game.classList.add("hidden");
         roundResult.innerHTML = status.result;
     },
-    (status) => {} // Implemented by server
+    (status) => {
+        waitingLogin.classList.add("hidden");
+        waitingInter.classList.remove("hidden");
+        game.classList.add("hidden");
+        roundResult.innerHTML = status.result;
+        clearInterval(updateLoop);
+    }
 ]
 
 async function updateGame() {

@@ -38,6 +38,8 @@ class Player {
 }
 
 class TheMind {
+    static MAX_LEVEL = 15;
+
     static LOGIN = 0;
     static PLAYING = 1;
     static INTER = 2;
@@ -75,7 +77,10 @@ class TheMind {
             this.level--;
             this.roundResult = reason;
         }
-        this.state = TheMind.INTER;
+        if (this.level >= Math.min(TheMind.MAX_LEVEL, 100 / this.players.length))
+            this.endGame();
+        else
+            this.state = TheMind.INTER;
     }
 
     startRound() {
@@ -109,7 +114,6 @@ class TheMind {
     }
 
     endGame() {
-        // TODO
         this.state = TheMind.END;
     }
 
@@ -150,7 +154,7 @@ class TheMind {
                 response.result = this.roundResult;
                 break;
             case TheMind.END:
-                response.result = "You managed to last until round 42";
+                response.result = `<h1>Game ended</h1>You managed to last until round ${this.level}`;
                 break;
         }
         return response;
@@ -176,7 +180,6 @@ class TheMind {
         const card = this.players[userIndex].removeCard();
         if (card == -1)
             return res.send({error: "No cards left"});
-        // TODO check valid card used
         if (this.allCards[this.remaining - 1] != card) {
             this.endRound(false, `${user} sent ${card} but the next one was ${this.allCards[this.remaining - 1]}`);
             return res.send({error: "Wrong card"});

@@ -63,7 +63,6 @@ app.get(
 app.get(
     '/game/status',
     (req, res) => {
-        // TODO redirect user if end
         res.setHeader('Content-Type', 'application/json');
         res.end(JSON.stringify(game.status(req.query.user)));
     }
