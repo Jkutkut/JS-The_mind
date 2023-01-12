@@ -1,4 +1,8 @@
+let rootStatus;
+let showCards = false;
+
 window.addEventListener('load', () => {
+    rootStatus = document.getElementById('rootStatus');
     const startBtn = document.getElementById('startBtn');
     const startRoundBtn = document.getElementById('startRoundBtn');
     const endRoundBtn = document.getElementById('endRoundBtn');
@@ -7,6 +11,8 @@ window.addEventListener('load', () => {
     const restartGameBtn = document.getElementById('restartGameBtn');
     const addLiveBtn = document.getElementById('addLiveBtn');
     const addPanicBtn = document.getElementById('addPanicBtn');
+
+    const showCardsBtn = document.getElementById('showCardsBtn');
 
     startBtn.addEventListener('click', () => {
         makeRequestAPI('/debug/start');
@@ -31,4 +37,21 @@ window.addEventListener('load', () => {
         makeRequestAPI('/debug/extraPanic');
     });
 
+    showCardsBtn.addEventListener('click', () => showCards = !showCards);
+
+    setInterval(updateRoot, 500);
 });
+
+async function updateRoot() {
+    try {
+        const status = await (await makeRequestAPI('/rootStatus')).json();
+        if (!showCards) {
+            status.players.forEach(player => {
+                player.cards = "???";
+            });
+        }
+        rootStatus.innerHTML = stringifyJSON(status);
+    } catch (error) {
+        console.error(error);
+    }
+}

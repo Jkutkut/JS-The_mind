@@ -82,6 +82,14 @@ app.post(
 
 // ! Root menu
 app.get(
+    '/rootStatus',
+    (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(game.rootStatus()));
+    }
+);
+
+app.get(
     '/debug/start',
     (req, res) => {
         game.start();

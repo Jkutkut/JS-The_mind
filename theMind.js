@@ -61,6 +61,16 @@ class TheMind {
     }
 
     // Root menu:
+    rootStatus() {
+        return {
+            state: this.state,
+            level: this.level,
+            health: this.health,
+            result: this.roundResult,
+            players: this.players.map(p => { return { name: p.name, cards: p.cards } })
+        };
+    }
+
     addLive() {
         this.health++;
     }
