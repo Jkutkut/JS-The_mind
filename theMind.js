@@ -42,7 +42,6 @@ class Player {
     }
 
     doPanic() {
-        console.log(this.name, ": panic method called")
         this._panic = true;
     }
 
@@ -61,9 +60,8 @@ class TheMind {
 
     constructor() {
         this.players = [];
-        // this.level = 0; // First lvl is 1
-        this.level = 4 // TODO
-        this.state = TheMind.LOGIN;
+        this.level = 0; // First lvl is 1
+        this._state = TheMind.LOGIN;
         this.health = 3; // TODO change based on number of players
         this.panics = 2; // TODO change based on number of players
         this.playersInPanic = -1;
@@ -74,6 +72,8 @@ class TheMind {
 
         // Inter state
         this.roundResult = "";
+
+        console.log("The mind initialized");
     }
 
     // Root menu:
@@ -108,7 +108,7 @@ class TheMind {
         this.playersInPanic = -1;
         if (success) {
             this.roundResult = "Round " + this.level + " ended successfully";
-            // TODO add health if necessary
+            // TODO add health and panics
         }
         else {
             this.level--;
@@ -127,8 +127,6 @@ class TheMind {
         this.state = TheMind.PLAYING;
         this.level++;
         this.playersInPanic = 0;
-        console.log("Round", this.level);
-
         const generator = function *(min, max) {
             const arr = [];
             for (let i = min; i <= max; i++)
@@ -151,6 +149,7 @@ class TheMind {
             }
         }
         this.allCards.sort((a, b) => b - a); // Smallest last
+        console.log("Round", this.level, "started");
     }
 
     endGame() {
@@ -161,10 +160,10 @@ class TheMind {
 
     addPlayer(req, res) {
         if (this.state != TheMind.LOGIN)
-            return res.send({error: "Not on login phase."}); // TODO refactor
+            return res.send({error: "Not on login phase."});
         const body = req.body;
         if (this.logged(body.user))
-            return res.send({error: "User already logged"}); // TODO refactor
+            return res.send({error: "User already logged"});
         this.players.push(new Player(body.user));
         console.log(`${body.user} added`);
         res.send({text: `${body.user} added`, url: "/game"});
@@ -181,7 +180,6 @@ class TheMind {
     }
 
     status(user) {
-        // console.log("Game status", user);
         let userIndex = this.indexOf(user);
         if (userIndex == -1)
             return {state: -1};
@@ -230,9 +228,9 @@ class TheMind {
             return res.send({error: "Wrong card"});
         }
         this.remaining--;
+        console.log(`${user} sent ${card}`);
         if (this.remaining == 0)
             this.endRound(true);
-        console.log(`${user} sent ${card}`);
         res.send("OK");
     }
 
@@ -250,6 +248,17 @@ class TheMind {
             this.endRound(false, "All players panicked");
         }
         res.send("OK");
+    }
+
+    // GETTERS
+    get state() {
+        return this._state;
+    }
+
+    set state(newState) {
+        const STATES = ['LOGGIN', 'PLAYING', 'INTER', 'ENDGAME'];
+        console.log(`Changing state: ${STATES[this.state]} -> ${STATES[newState]}`);
+        this._state = newState;
     }
 }
 
