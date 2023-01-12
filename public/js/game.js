@@ -2,7 +2,7 @@ var updateLoop;
 var user;
 
 // Game
-var containers, btnSend;
+var containers;
 
 window.addEventListener('load', () => {
     const queryString = window.location.search;
@@ -21,9 +21,16 @@ window.addEventListener('load', () => {
         // Inter
         roundResult: document.getElementById('roundResult'),
     }
-    btnSend = document.getElementById('btnSend');
+
+    // Components
+    const btnSend = document.getElementById('btnSend');
     btnSend.addEventListener('click', async () => {
-        await fetch(`/sendCard?user=${user}`, {method: "POST"});
+        await postAPI(`/sendCard?user=${user}`);
+        updateGame();
+    });
+    const btnPanic = document.getElementById('btnPanic');
+    btnPanic.addEventListener('click', async () => {
+        await postAPI(`/panic?user=${user}`);
         updateGame();
     });
 
@@ -52,6 +59,7 @@ const updateFts = [
         game.classList.add("hidden");
     },
     (status) => { // playing
+        btnPanic.disabled = status.panics == 0 || status.inPanic;
         waitingLogin.classList.add("hidden");
         waitingInter.classList.add("hidden");
         game.classList.remove("hidden");

@@ -80,6 +80,11 @@ app.post(
     (req, res) => game.sendCard(res, req.query.user)
 )
 
+app.post(
+    '/panic',
+    (req, res) => game.panic(res, req.query.user)
+)
+
 // ! Root menu
 app.get(
     '/rootStatus',
