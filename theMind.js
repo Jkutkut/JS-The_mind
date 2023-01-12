@@ -161,10 +161,10 @@ class TheMind {
 
     addPlayer(req, res) {
         if (this.state != TheMind.LOGIN)
-            return res.send({error: "Not on login phase."}); // TODO refactor with render and error
+            return res.send({error: "Not on login phase."}); // TODO refactor
         const body = req.body;
         if (this.logged(body.user))
-            return res.send({error: "User already logged"}); // TODO refactor with render and error
+            return res.send({error: "User already logged"}); // TODO refactor
         this.players.push(new Player(body.user));
         console.log(`${body.user} added`);
         res.send({text: `${body.user} added`, url: "/game"});
