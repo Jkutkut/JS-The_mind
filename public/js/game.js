@@ -4,19 +4,6 @@ var user;
 // Game
 var containers, btnSend;
 
-async function makeRequestAPI(request) {
-    return await fetch(
-        request,
-        {
-            method: 'GET',
-            // headers: {
-            //     'Content-Type': 'application/json',
-            // },
-            // body: JSON.stringify(body)
-        }
-    );
-}
-
 window.addEventListener('load', () => {
     const queryString = window.location.search;
     const urlParams = new URLSearchParams(queryString);
@@ -49,24 +36,6 @@ window.addEventListener('load', () => {
             clearInterval(updateLoop);
         }
     }, 1500); updateGame();
-
-    // ! DEBUG
-    const startBtn = document.getElementById('startBtn');
-    const startRoundBtn = document.getElementById('startRoundBtn');
-    const endRoundBtn = document.getElementById('endRoundBtn');
-    const endGameBtn = document.getElementById('endGameBtn');
-    startBtn.addEventListener('click', () => {
-        makeRequestAPI('/debug/start');
-    });
-    startRoundBtn.addEventListener('click', () => {
-        makeRequestAPI('/debug/startRound');
-    });
-    endRoundBtn.addEventListener('click', () => {
-        makeRequestAPI('/debug/endRound');
-    });
-    endGameBtn.addEventListener('click', () => {
-        makeRequestAPI('/debug/endGame');
-    });
 });
 
 // const STATES = {

@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-const game = new TheMind();
+let game = new TheMind();
 // ********** Routes **********
 app.get(
     '/',
@@ -31,6 +31,13 @@ app.get(
         }
     }
 );
+
+app.get(
+    '/root',
+    (req, res) => {
+        res.render('root');
+    }
+)
 
 app.get(
     '/login',
@@ -73,7 +80,15 @@ app.post(
     (req, res) => game.sendCard(res, req.query.user)
 )
 
-// ! DEBUG
+// ! Root menu
+app.get(
+    '/rootStatus',
+    (req, res) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.end(JSON.stringify(game.rootStatus()));
+    }
+);
+
 app.get(
     '/debug/start',
     (req, res) => {
@@ -92,7 +107,7 @@ app.get(
 app.get(
     '/debug/endRound',
     (req, res) => {
-        game.endRound();
+        game.endRound(false, "Stopped by root");
         res.send('OK');
     }
 );
@@ -100,6 +115,29 @@ app.get(
     '/debug/endGame',
     (req, res) => {
         game.endGame();
+        res.send('OK');
+    }
+);
+
+app.get(
+    '/debug/restartGame',
+    (req, res) => {
+        game = new TheMind();
+    }
+);
+
+app.get(
+    '/debug/extraLive',
+    (req, res) => {
+        game.addLive();
+        res.send('OK');
+    }
+);
+
+app.get(
+    '/debug/extraPanic',
+    (req, res) => {
+        game.addPanic();
         res.send('OK');
     }
 );
