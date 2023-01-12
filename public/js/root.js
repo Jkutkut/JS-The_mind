@@ -39,7 +39,7 @@ window.addEventListener('load', () => {
 
     showCardsBtn.addEventListener('click', () => showCards = !showCards);
 
-    setInterval(updateRoot, 500);
+    setInterval(updateRoot, 500); updateRoot();
 });
 
 async function updateRoot() {
