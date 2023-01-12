@@ -15,7 +15,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-const game = new TheMind();
+let game = new TheMind();
 // ********** Routes **********
 app.get(
     '/',
@@ -80,7 +80,7 @@ app.post(
     (req, res) => game.sendCard(res, req.query.user)
 )
 
-// ! DEBUG
+// ! Root menu
 app.get(
     '/debug/start',
     (req, res) => {
@@ -108,6 +108,13 @@ app.get(
     (req, res) => {
         game.endGame();
         res.send('OK');
+    }
+);
+
+app.get(
+    '/debug/restartGame',
+    (req, res) => {
+        game = new TheMind();
     }
 );
 
