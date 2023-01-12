@@ -34,15 +34,7 @@ window.addEventListener('load', () => {
         updateGame();
     });
 
-    updateLoop = setInterval(async () => {
-        try {
-            await updateGame();
-        } catch (error) {
-            console.error(error);
-            alert(error);
-            clearInterval(updateLoop);
-        }
-    }, 1500); updateGame();
+    updateLoop = setInterval(updateGame, 1500); updateGame();
 });
 
 // const STATES = {
@@ -92,9 +84,14 @@ const updateFts = [
 ]
 
 async function updateGame() {
-    let status = await (await makeRequestAPI(`/game/status?user=${user}`)).json();
-    console.log(status);
-    if (status.state == -1)
+    await makeRequestAPI(`/game/status?user=${user}`)
+    .then(r => r.json()).then(status => {
+        if (status.state == -1)
         return window.location.reload();
-    updateFts[status.state](status);
+        updateFts[status.state](status);
+    })
+    .catch(error => {
+        console.error("Error updating the game:", error);
+        clearInterval(updateLoop);
+    });
 }
