@@ -99,7 +99,7 @@ app.get(
 app.get(
     '/debug/endRound',
     (req, res) => {
-        game.endRound();
+        game.endRound(false, "Stopped by root");
         res.send('OK');
     }
 );

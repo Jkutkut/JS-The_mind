@@ -3,7 +3,11 @@ window.addEventListener('load', () => {
     const startRoundBtn = document.getElementById('startRoundBtn');
     const endRoundBtn = document.getElementById('endRoundBtn');
     const endGameBtn = document.getElementById('endGameBtn');
-    const restartGame = document.getElementById('restartGame');
+
+    const restartGameBtn = document.getElementById('restartGameBtn');
+    const addLiveBtn = document.getElementById('addLiveBtn');
+    const addPanicBtn = document.getElementById('addPanicBtn');
+
     startBtn.addEventListener('click', () => {
         makeRequestAPI('/debug/start');
     });
@@ -16,7 +20,15 @@ window.addEventListener('load', () => {
     endGameBtn.addEventListener('click', () => {
         makeRequestAPI('/debug/endGame');
     });
-    restartGame.addEventListener('click', () => {
+
+    restartGameBtn.addEventListener('click', () => {
         makeRequestAPI('/debug/restartGame');
     });
+    addLiveBtn.addEventListener('click', () => {
+        makeRequestAPI('/debug/extraLive');
+    });
+    addPanicBtn.addEventListener('click', () => {
+        makeRequestAPI('/debug/extraPanic');
+    });
+
 });
